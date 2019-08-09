@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-xorm/xorm"
 	"github.com/sirupsen/logrus"
+	"github.com/nolleh/gobank/loggers"
 )
 
 func DB(ctx context.Context) xorm.Interface {
@@ -22,16 +23,8 @@ func DB(ctx context.Context) xorm.Interface {
 	panic("DB is not exist")
 }
 
-func BehaviorLogger(ctx context.Context) *behaviorlog.LogContext {
-	v := ctx.Value(behaviorlog.LogContextName)
-	if logger, ok := v.(*behaviorlog.LogContext); ok {
-		return logger.Clone()
-	}
-	return behaviorlog.NewNopContext()
-}
-
 func Logger(ctx context.Context) *logrus.Entry {
-	v := ctx.Value(echomiddleware.ContextLoggerName)
+	v := ctx.Value(loggers.ContextLoggerName)
 	if v == nil {
 		return logrus.WithFields(logrus.Fields{})
 	}
