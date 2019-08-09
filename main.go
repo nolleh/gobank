@@ -2,17 +2,21 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xorm/xorm"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/nolleh/gobank/controllers"
-	"github.com/nolleh/utils/dbcontext"
+	"github.com/nolleh/gobank/utils"
 ) 
 
 func main() {
 	appEnv := flag.String("app-env", os.Getenv("APP_ENV"), "app env")
 	flag.Parse()
 	var c Config
-	if err := configutil.Read(*appEnv, &c); err != nil {
+	if err := ReadConfig(*appEnv, &c); err != nil {
 		panic(err)
 	}
 

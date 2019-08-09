@@ -1,6 +1,9 @@
 package controllers
 
-import "github.com/labstack/echo"
+import (
+	"time"
+	"github.com/labstack/echo"
+)
 
 type BalanceController struct {
 
@@ -11,8 +14,11 @@ func (b *BalanceController) Init(g *echo.Group) {
 }
 
 func (b *BalanceController) Get(c *echo.Context) error {
-	jsonMap := map[string]string {
-		"foo": "bar",
+	var content struct {
+        Response  string `json:"response"`
+        Timestamp string `json:"timestamp"`
 	}
-	return c.JSON(http.StatusOK, jsonMap)
+	content.Response = "Hello, World!"
+    content.Timestamp = getNow()
+	return c.JSON(http.StatusOK, &content)
 }

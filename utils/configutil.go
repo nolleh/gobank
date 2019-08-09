@@ -15,7 +15,7 @@ func SetConfigPath(in string) {
 	viper.AddConfigPath(configPath)
 }
 
-func Read(env string, config interface{}) error {
+func ReadConfig(env string, config interface{}) error {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(configPath)
 
