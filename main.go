@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -10,7 +11,7 @@ import (
 	"github.com/labstack/echo"
 	// "github.com/labstack/echo/middleware"
 	"github.com/nolleh/gobank/controllers"
-	utils "github.com/nolleh/gobank/utils"
+	"github.com/nolleh/gobank/utils"
 	"github.com/nolleh/gobank/models"
 ) 
 
@@ -24,11 +25,18 @@ func main() {
 
 	fmt.Println(c)
 	db, err := initDB(c.Database.Driver, c.Database.Connection)
+	if err != nil {
+		panic(err)
+	}
 	e := echo.New()
 
 	controllers.BalanceController{}.Init(e.Group("/v1/balance"))
 
+	if err := e.Start(":" + c.HttpPort); err != nil {
+		log.Println(err)
+	}
 	e.Use(utils.DbContext(db))
+	fmt.Println("shutting down...")
 }
 
 func initDB(driver, connection string) (*xorm.Engine, error) {
@@ -37,7 +45,7 @@ func initDB(driver, connection string) (*xorm.Engine, error) {
 		return nil, err
 	}
 
-	db.Sync(new(models.balance))
+	db.Sync(new(models.Balance))
 	return db, nil
 }
 
@@ -47,4 +55,5 @@ type Config struct {
 		Driver string
 		Connection string
 	}
+	HttpPort string
 }
