@@ -10,7 +10,7 @@ type BalanceController struct {
 
 }
 
-func (BalanceController) Init(g *echo.Group) {
+func (b BalanceController) Init(g *echo.Group) {
 	g.GET("/:userId", b.Get)
 }
 
