@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 )
 
@@ -12,5 +13,5 @@ type Balance struct {
 }
 
 func (b *Balance) Create(ctx context.Context) (int64, error) {
-	return factory.DB(ctx).Insert(d)
+	return factory.DB(ctx).Insert(b)
 }

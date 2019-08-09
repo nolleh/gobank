@@ -11,6 +11,7 @@ import (
 	// "github.com/labstack/echo/middleware"
 	"github.com/nolleh/gobank/controllers"
 	utils "github.com/nolleh/gobank/utils"
+	"github.com/nolleh/gobank/models"
 ) 
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 
 	controllers.BalanceController{}.Init(e.Group("/v1/balance"))
 
-	e.Use(utils.DbConext(db))
+	e.Use(utils.DbContext(db))
 }
 
 func initDB(driver, connection string) (*xorm.Engine, error) {
