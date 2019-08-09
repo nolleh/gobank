@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/go-xorm/xorm"
 	"github.com/sirupsen/logrus"
-	"github.com/nolleh/gobank/loggers"
+	"github.com/nolleh/gobank/logger"
 )
 
 func DB(ctx context.Context) xorm.Interface {
