@@ -6,6 +6,7 @@ import (
 	"github.com/go-xorm/xorm"
 )
 
+type ContextDBType string
 var ContextDBName ContextDBType = "DB"
 
 func DbContext(db *xorm.Engine) echo.MiddlewareFunc {
