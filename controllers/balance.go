@@ -6,11 +6,11 @@ type BalanceController struct {
 
 }
 
-func (c *BalanceController) Init(g *echo.Group) {
-	g.GET("/:userId", c.Get)
+func (b *BalanceController) Init(g *echo.Group) {
+	g.GET("/:userId", b.Get)
 }
 
-func (b *BalanceController) Get(c echo.Context) {
+func (b *BalanceController) Get(c *echo.Context) error {
 	jsonMap := map[string]string {
 		"foo": "bar",
 	}
