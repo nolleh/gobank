@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/nolleh/goecho/controllers"
+	"github.com/nolleh/gobank/controllers"
 ) 
+
 func main() {
 
 }
