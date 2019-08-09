@@ -9,7 +9,7 @@ import (
 )
 
 func DB(ctx context.Context) xorm.Interface {
-	v := ctx.Value(ContextDBName)
+	v := ctx.Value(utils.ContextDBName)
 	if v == nil {
 		panic("DB is not exist")
 	}
