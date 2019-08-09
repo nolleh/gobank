@@ -24,7 +24,7 @@ func DB(ctx context.Context) xorm.Interface {
 }
 
 func Logger(ctx context.Context) *logrus.Entry {
-	v := ctx.Value(loggers.ContextLoggerName)
+	v := ctx.Value(logger.ContextLoggerName)
 	if v == nil {
 		return logrus.WithFields(logrus.Fields{})
 	}
