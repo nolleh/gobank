@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"time"
+	"github.com/nolleh/gobank/factory"
 )
 
 // balance model
