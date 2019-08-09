@@ -10,11 +10,11 @@ type BalanceController struct {
 
 }
 
-func (b *BalanceController) Init(g *echo.Group) {
+func (BalanceController) Init(g *echo.Group) {
 	g.GET("/:userId", b.Get)
 }
 
-func (b *BalanceController) Get(c echo.Context) error {
+func (BalanceController) Get(c echo.Context) error {
 	var content struct {
         Response  string `json:"response"`
         Timestamp string `json:"timestamp"`
