@@ -32,7 +32,9 @@ func (BalanceController) Post(c echo.Context) error {
         Timestamp string `json:"timestamp"`
 	}
 
-	if _, err := models.Balance{}.Create(c.Request().Context()); err != nil {
+	balance := models.Balance{}
+
+	if _, err := balance.Create(c.Request().Context()); err != nil {
 		return err
 	}
 
