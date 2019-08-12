@@ -16,10 +16,11 @@ func DbContext(db *xorm.Engine) echo.MiddlewareFunc {
 			defer session.Close()
 
 			req := c.Request()
-			c.SetRequest(req.WithContext(
-				context.WithValue(
-					req.Context(),
-					"DB",
+			ctx := req.Context()
+			
+			c.SetRequest(req.WithContext(context.WithValue(
+					ctx,
+					ContextDBName,
 					session,
 				),
 			))

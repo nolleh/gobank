@@ -1,22 +1,24 @@
-package controllers
+package methods
 
 import (
 	"time"
 	"net/http"
 	"github.com/labstack/echo"
-	"github.com/nolleh/gobank/models"
+	// "github.com/sirupsen/logrus"
+
+	"gobank/models"
+	"gobank/factory"
 )
 
 type BalanceController struct {
 
 }
 
-func (b BalanceController) Init(g *echo.Group) {
-	g.GET("/:userId", b.Get)
-	g.POST("/:userId", b.Post)
+func RoutePost(g *echo.Group) {
+	g.POST("/:userId", Post)
 }
 
-func (BalanceController) Get(c echo.Context) error {
+func Get(c echo.Context) error {
 	var content struct {
         Response  string `json:"response"`
         Timestamp string `json:"timestamp"`
@@ -26,17 +28,25 @@ func (BalanceController) Get(c echo.Context) error {
 	return c.JSON(http.StatusOK, &content)
 }
 
-func (BalanceController) Post(c echo.Context) error {
+func Post(c echo.Context) error {
 	var content struct {
 		Response  string `json:"response"`
         Timestamp string `json:"timestamp"`
 	}
 
-	balance := models.Balance{}
+	balance := models.Balance{ Amount:1 }
+	// balance2 := models.Balance{ Amount: 2}
 
 	if _, err := balance.Create(c.Request().Context()); err != nil {
 		return err
 	}
 
+	// if _, err := balance2.Create(c.Request().Context()); err != nil {
+	// 	return err
+	// }
+	
+	ctx := c.Request().Context()
+	factory.Logger(ctx).Info("inserted db as parameter")
+	factory.Logger(ctx).Info("inserted db as parameter2")
 	return c.JSON(http.StatusOK, &content)
 }
