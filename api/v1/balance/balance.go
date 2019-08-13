@@ -7,4 +7,5 @@ import (
 
 func Route(g *echo.Group) {
 	methods.RoutePost(g)
+	methods.RouteDelete(g)
 }

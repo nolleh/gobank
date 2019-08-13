@@ -24,7 +24,7 @@ func ReadConfig(env string, config interface{}) error {
 	}
 
 	if env != "" {
-		f, err := os.Open(filepath.Join(configPath, "config."+env+".yml"))
+		f, err := os.Open(filepath.Join(configPath, env + ".yaml"))
 		if err != nil {
 			return fmt.Errorf("Fatal error config file: %s \n", err)
 		}

@@ -24,6 +24,9 @@ func main() {
 	appEnv := flag.String("app-env", os.Getenv("APP_ENV"), "app env")
 	flag.Parse()
 	var c Config
+
+	utils.SetConfigPath("./config")
+	
 	if err := utils.ReadConfig(*appEnv, &c); err != nil {
 		panic(err)
 	}

@@ -1,8 +1,9 @@
 package methods
 
 import (
-	"time"
 	"net/http"
+	"time"
+	"strconv"
 	"github.com/labstack/echo"
 	// "github.com/sirupsen/logrus"
 
@@ -10,14 +11,17 @@ import (
 	"gobank/factory"
 )
 
-type BalanceController struct {
-
-}
-
+// RoutePost ...
 func RoutePost(g *echo.Group) {
 	g.POST("/:userId", Post)
 }
 
+type ApiError struct {
+	Code int
+	Message string
+}
+
+// Get ...
 func Get(c echo.Context) error {
 	var content struct {
         Response  string `json:"response"`
@@ -28,25 +32,28 @@ func Get(c echo.Context) error {
 	return c.JSON(http.StatusOK, &content)
 }
 
+// Post ...
 func Post(c echo.Context) error {
+	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
+
+	if err != nil {
+		resp := ApiError{ Code: -1, Message: "Invalid Parameter" }
+		return c.JSON(http.StatusOK, &resp)
+	}
+
 	var content struct {
 		Response  string `json:"response"`
         Timestamp string `json:"timestamp"`
 	}
 
-	balance := models.Balance{ Amount:1 }
-	// balance2 := models.Balance{ Amount: 2}
-
-	if _, err := balance.Create(c.Request().Context()); err != nil {
+	balance := models.Balance{ UserId: userId, Amount:1000 }
+	ctx := c.Request().Context()
+	
+	if _, err := balance.Create(ctx); err != nil {
 		return err
 	}
-
-	// if _, err := balance2.Create(c.Request().Context()); err != nil {
-	// 	return err
-	// }
 	
-	ctx := c.Request().Context()
 	factory.Logger(ctx).Info("inserted db as parameter")
-	factory.Logger(ctx).Info("inserted db as parameter2")
 	return c.JSON(http.StatusOK, &content)
 }
+
