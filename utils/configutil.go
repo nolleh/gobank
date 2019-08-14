@@ -10,13 +10,18 @@ import (
 
 var configPath = "."
 
+func InitConfig(env string, config interface{}) error {
+	SetConfigPath("config")
+	return ReadConfig(env, config)
+}
+
 func SetConfigPath(in string) {
 	configPath = in
 	viper.AddConfigPath(configPath)
 }
 
 func ReadConfig(env string, config interface{}) error {
-	viper.SetConfigName("config")
+	viper.SetConfigName("default")
 	viper.AddConfigPath(configPath)
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -24,16 +29,23 @@ func ReadConfig(env string, config interface{}) error {
 	}
 
 	if env != "" {
-		f, err := os.Open(filepath.Join(configPath, env + ".yaml"))
-		if err != nil {
-			return fmt.Errorf("Fatal error config file: %s \n", err)
-		}
-		defer f.Close()
-		viper.MergeConfig(f)
+		loadFileConfig(env + ".yaml")
 	}
+	loadFileConfig("local.yaml")
 
 	if err := viper.Unmarshal(config); err != nil {
 		return fmt.Errorf("Fatal error config file: %s \n", err)
 	}
+	return nil
+}
+
+func loadFileConfig(filename string) error {
+	f, err := os.Open(filepath.Join(configPath, filename))
+	defer f.Close()
+	if err != nil {
+		return fmt.Errorf("Fatal error config file: %s \n", err)
+	}
+
+	viper.MergeConfig(f)
 	return nil
 }

@@ -16,9 +16,11 @@ func RoutePost(g *echo.Group) {
 	g.POST("/:userId", Post)
 }
 
+// struct tag meaning
+// `marshaling struct type: name, [omitempty]`
 type ApiError struct {
-	Code int
-	Message string
+	Code int `json:"code"`
+	Message string `json:"message"`
 }
 
 // Get ...

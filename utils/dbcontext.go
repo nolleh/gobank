@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"context"
 	"github.com/labstack/echo"
 	"github.com/go-xorm/xorm"
@@ -12,7 +13,10 @@ var ContextDBName ContextDBType = "DB"
 func DbContext(db *xorm.Engine) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			// by testing result, new session doesn't make new connections.
+			// for user convinient, managing internal memory for context or saving lastsql and so on...
 			session := db.NewSession()
+			defer fmt.Println("end")
 			defer session.Close()
 
 			req := c.Request()

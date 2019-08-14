@@ -25,9 +25,7 @@ func main() {
 	flag.Parse()
 	var c Config
 
-	utils.SetConfigPath("./config")
-	
-	if err := utils.ReadConfig(*appEnv, &c); err != nil {
+	if err := utils.InitConfig(*appEnv, &c); err != nil {
 		panic(err)
 	}
 
@@ -54,6 +52,8 @@ func initDB(driver, connection string) (*xorm.Engine, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(10)
 
 	db.Sync(new(models.Balance))
 	return db, nil
