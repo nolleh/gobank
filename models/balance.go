@@ -5,8 +5,8 @@ package models
 
 import (
 	"context"
-	"time"
 	"gobank/factory"
+	"time"
 )
 
 // Balance ...
