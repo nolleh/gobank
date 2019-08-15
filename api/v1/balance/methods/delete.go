@@ -1,14 +1,13 @@
 package methods
 
 import (
-	"net/http"
-	"time"
-	"strconv"
 	"github.com/labstack/echo"
+	"net/http"
+	"strconv"
+	"time"
 	// "github.com/sirupsen/logrus"
-
-	"gobank/models"
 	"gobank/factory"
+	"gobank/models"
 )
 
 // RouteDelete ...

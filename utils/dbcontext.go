@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"fmt"
 	"context"
-	"github.com/labstack/echo"
+	"fmt"
 	"github.com/go-xorm/xorm"
+	"github.com/labstack/echo"
 )
 
 type ContextDBType string

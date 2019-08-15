@@ -1,11 +1,9 @@
 package factory
 
 import (
-	"fmt"
 	"context"
 	"github.com/go-xorm/xorm"
 	"github.com/sirupsen/logrus"
-
 	"gobank/logger"
 	"gobank/utils"
 )
@@ -32,7 +30,6 @@ func Logger(ctx context.Context) *logrus.Entry {
 		return logrus.WithFields(logrus.Fields{})
 	}
 	if logger, ok := v.(*logrus.Entry); ok {
-		fmt.Println("find!")
 		return logger
 	}
 	return logrus.WithFields(logrus.Fields{})

@@ -10,17 +10,29 @@ import (
 
 var configPath = "."
 
-func InitConfig(env string, config interface{}) error {
-	SetConfigPath("config")
-	return ReadConfig(env, config)
+// config
+type Config struct {
+	Database struct {
+		Driver     string
+		Connection string
+	}
+	HttpPort string
 }
 
-func SetConfigPath(in string) {
+var config Config
+
+func GetConfig(env string, path string) (*Config, error) {
+	setConfigPath(path)
+	err := readConfig(env, &config)
+	return &config, err
+}
+
+func setConfigPath(in string) {
 	configPath = in
 	viper.AddConfigPath(configPath)
 }
 
-func ReadConfig(env string, config interface{}) error {
+func readConfig(env string, config interface{}) error {
 	viper.SetConfigName("default")
 	viper.AddConfigPath(configPath)
 

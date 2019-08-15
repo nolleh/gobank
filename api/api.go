@@ -1,8 +1,8 @@
 package api
 
 import (
-	"gobank/api/v1"
 	"github.com/labstack/echo"
+	"gobank/api/v1"
 )
 
 func Route(r *echo.Group) {
