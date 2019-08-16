@@ -2,12 +2,12 @@ package methods
 
 import (
 	"github.com/labstack/echo"
-	"net/http"
-	"strconv"
-	"time"
-	// "github.com/sirupsen/logrus"
+	"gobank/common/types"
+	"gobank/echoMiddlewares"
 	"gobank/factory"
 	"gobank/models"
+	"net/http"
+	"strconv"
 )
 
 // RouteDelete ...
@@ -17,29 +17,32 @@ func RouteDelete(g *echo.Group) {
 
 // Delete ... 
 func Delete(c echo.Context) error {
-	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
+	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
+
+	ctx := c.Request().Context()
+	traceId := ctx.Value(echoMiddlewares.ContextTraceId).(string)
 
 	if err != nil {
-		resp := ApiError{ Code: -1, Message: "Invalid Parameter" }
+		respError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
-	var content struct {
-        Response  string `json:"response"`
-        Timestamp string `json:"timestamp"`
-	}
-	content.Response = "Hello, World!"
-	content.Timestamp = time.Now().String()
-
-	ctx := c.Request().Context()
-	
-	balance := models.Balance{ UserId: userId, Amount:1000 }
+	balance := models.BalanceEntity{ UserId: userId }
 	
 	if _, err := balance.Delete(ctx); err != nil {
-		return err
+		respError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: respError, TraceId: traceId }
+		return c.JSON(http.StatusOK, &resp)
 	}
-	
+
 	factory.Logger(ctx).Info("delete db", userId)
-	
-	return c.JSON(http.StatusOK, &content)
+
+	type Result struct {
+		message string
+	}
+	result := Result{ "OK" }
+	resp := types.ApiResponse{ Result: result, TraceId: traceId }
+
+	return c.JSON(http.StatusOK, &resp)
 }

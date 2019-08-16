@@ -1,13 +1,15 @@
 package methods
 
 import (
+	"fmt"
 	"github.com/labstack/echo"
-	"net/http"
-	"strconv"
-	"time"
-	// "github.com/sirupsen/logrus"
+	"github.com/mitchellh/mapstructure"
+	"gobank/common/types"
+	"gobank/echoMiddlewares"
 	"gobank/factory"
 	"gobank/models"
+	"net/http"
+	"strconv"
 )
 
 // RoutePost ...
@@ -15,46 +17,45 @@ func RoutePost(g *echo.Group) {
 	g.POST("/:userId", Post)
 }
 
-// struct tag meaning
-// `marshaling struct type: name, [omitempty]`
-type ApiError struct {
-	Code int `json:"code"`
-	Message string `json:"message"`
-}
-
-// Get ...
-func Get(c echo.Context) error {
-	var content struct {
-        Response  string `json:"response"`
-        Timestamp string `json:"timestamp"`
-	}
-	content.Response = "Hello, World!"
-    content.Timestamp = time.Now().String()
-	return c.JSON(http.StatusOK, &content)
-}
-
 // Post ...
+// actionType: deposit / withdraw
 func Post(c echo.Context) error {
-	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
+	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
+	ctx := c.Request().Context()
+	traceId := ctx.Value(echoMiddlewares.ContextTraceId).(string)
 
 	if err != nil {
-		resp := ApiError{ Code: -1, Message: "Invalid Parameter" }
+		apiError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
-	var content struct {
-		Response  string `json:"response"`
-        Timestamp string `json:"timestamp"`
+	m := echo.Map{}
+	if err := c.Bind(&m); err != nil {
+		apiError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
+		return c.JSON(http.StatusOK, &resp)
 	}
 
-	balance := models.Balance{ UserId: userId, Amount:1000 }
-	ctx := c.Request().Context()
-	
-	if _, err := balance.Create(ctx); err != nil {
-		return err
+	balance := models.BalanceEntity{ UserId: userId }
+	mapBalance := m["diffBalance"].(map[string]interface{}) // interface{}.(jsonobject)
+	var diffBalance models.Balance
+	mapstructure.Decode(mapBalance, &diffBalance)
+
+	if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
+		apiError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
+		return c.JSON(http.StatusOK, &resp)
 	}
-	
-	factory.Logger(ctx).Info("inserted db as parameter")
-	return c.JSON(http.StatusOK, &content)
+
+	factory.Logger(ctx).Info(fmt.Sprint("modified db as parameter", diffBalance))
+
+	type Result struct {
+		balance models.BalanceEntity
+	}
+	result := Result { balance }
+	resp := types.ApiResponse{ Result:result, TraceId:traceId }
+
+	return c.JSON(http.StatusOK, &resp)
 }
 

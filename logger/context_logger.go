@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 	"fmt"
+	"gobank/echoMiddlewares"
 	"log"
 	"runtime"
 
@@ -32,9 +33,9 @@ func ContextLogger() echo.MiddlewareFunc {
 
 			id := c.Request().Header.Get(echo.HeaderXRequestID)
 			if id == "" {
-				id = c.Response().Header().Get(echo.HeaderXRequestID)
+				id = c.Request().Context().Value(echoMiddlewares.ContextTraceId).(string)
 			}
-			logEntry = logEntry.WithField("request_id", id)
+			logEntry = logEntry.WithField(echoMiddlewares.ContextTraceId, id)
 
 			req := c.Request()
 			c.SetRequest(req.WithContext(context.WithValue(req.Context(), ContextLoggerName, logEntry)))

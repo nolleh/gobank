@@ -5,12 +5,13 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
+	"gobank/config"
+	"gobank/echoMiddlewares"
 	// "github.com/labstack/echo/middleware"
 	"github.com/go-xorm/xorm"
 	"gobank/api"
 	"gobank/logger"
 	"gobank/models"
-	"gobank/utils"
 	"log"
 	"os"
 )
@@ -19,8 +20,8 @@ func main() {
 	appEnv := flag.String("app-env", os.Getenv("APP_ENV"), "app env")
 	flag.Parse()
 
-	configDir := "config"
-	config, err := utils.GetConfig(*appEnv, configDir); if err != nil {
+	configDir := "configFiles"
+	config, err := config.GetConfig(*appEnv, configDir); if err != nil {
 		panic(err)
 	}
 	fmt.Println(config)
@@ -31,7 +32,8 @@ func main() {
 	}
 
 	e := echo.New()
-	e.Use(utils.DbContext(db))
+	e.Use(echoMiddlewares.ApiContext())
+	e.Use(echoMiddlewares.DbContext(db))
 	e.Use(logger.ContextLogger())
 
 	apiGroup := e.Group("/api")
@@ -51,6 +53,6 @@ func initDB(driver, connection string) (*xorm.Engine, error) {
 
 	db.SetMaxOpenConns(10)
 
-	db.Sync(new(models.Balance))
+	db.Sync(new(models.BalanceEntity))
 	return db, nil
 }

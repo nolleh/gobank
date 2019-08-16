@@ -1,2 +1,2 @@
 *.exe
-**/local.yaml
+configFiles/local.yaml

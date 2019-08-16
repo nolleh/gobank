@@ -1,4 +1,0 @@
-database:
-  driver: "mysql"
-  connection: "bank_back_end"
-httpPort: 8080

@@ -1,8 +1,7 @@
-package utils
+package echoMiddlewares
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 )
@@ -16,7 +15,6 @@ func DbContext(db *xorm.Engine) echo.MiddlewareFunc {
 			// by testing result, new session doesn't make new connections.
 			// for user convinient, managing internal memory for context or saving lastsql and so on...
 			session := db.NewSession()
-			defer fmt.Println("end")
 			defer session.Close()
 
 			req := c.Request()

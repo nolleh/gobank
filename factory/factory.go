@@ -4,12 +4,12 @@ import (
 	"context"
 	"github.com/go-xorm/xorm"
 	"github.com/sirupsen/logrus"
+	"gobank/echoMiddlewares"
 	"gobank/logger"
-	"gobank/utils"
 )
 
 func DB(ctx context.Context) xorm.Interface {
-	v := ctx.Value(utils.ContextDBName)
+	v := ctx.Value(echoMiddlewares.ContextDBName)
 	if v == nil {
 		panic("DB is not exist")
 	}
