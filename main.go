@@ -32,8 +32,8 @@ func main() {
 	}
 
 	e := echo.New()
-	e.Use(echoMiddlewares.ApiContext())
-	e.Use(echoMiddlewares.DbContext(db))
+	e.Use(echoMiddlewares.InjectApiContext())
+	e.Use(echoMiddlewares.InjectDbContext(db))
 	e.Use(logger.ContextLogger())
 
 	apiGroup := e.Group("/api")

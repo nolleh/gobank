@@ -34,3 +34,11 @@ func Logger(ctx context.Context) *logrus.Entry {
 	}
 	return logrus.WithFields(logrus.Fields{})
 }
+
+func ApiContext(ctx context.Context) *echoMiddlewares.ApiContext {
+	v := ctx.Value(echoMiddlewares.ApiContextName).(*echoMiddlewares.ApiContext)
+	if v == nil {
+		panic("not exist ApiContext")
+	}
+	return v
+}

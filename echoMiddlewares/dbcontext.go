@@ -9,7 +9,7 @@ import (
 type ContextDBType string
 var ContextDBName ContextDBType = "DB"
 
-func DbContext(db *xorm.Engine) echo.MiddlewareFunc {
+func InjectDbContext(db *xorm.Engine) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			// by testing result, new session doesn't make new connections.

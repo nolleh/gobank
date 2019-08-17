@@ -3,7 +3,7 @@ package methods
 import (
 	"github.com/labstack/echo"
 	"gobank/common/types"
-	"gobank/echoMiddlewares"
+	"gobank/factory"
 	"gobank/models"
 	"net/http"
 	"strconv"
@@ -18,7 +18,7 @@ func Get(c echo.Context) error {
 	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
 
 	ctx := c.Request().Context()
-	traceId := ctx.Value(echoMiddlewares.ContextTraceId).(string)
+	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
 		respError := types.ApiError{Code: -1, Message: err.Error()}

@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo"
 	"github.com/mitchellh/mapstructure"
 	"gobank/common/types"
-	"gobank/echoMiddlewares"
 	"gobank/factory"
 	"gobank/models"
 	"net/http"
@@ -22,7 +21,7 @@ func RoutePost(g *echo.Group) {
 func Post(c echo.Context) error {
 	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
 	ctx := c.Request().Context()
-	traceId := ctx.Value(echoMiddlewares.ContextTraceId).(string)
+	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
 		apiError := types.ApiError{ Code: -1, Message: err.Error() }

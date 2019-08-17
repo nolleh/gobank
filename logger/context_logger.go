@@ -31,14 +31,16 @@ func ContextLogger() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			logEntry := logrus.NewEntry(logger)
 
+			req := c.Request()
+			ctx := req.Context()
 			id := c.Request().Header.Get(echo.HeaderXRequestID)
 			if id == "" {
-				id = c.Request().Context().Value(echoMiddlewares.ContextTraceId).(string)
+				apiContext := ctx.Value(echoMiddlewares.ApiContextName).(*echoMiddlewares.ApiContext)
+				id = apiContext.TraceId
 			}
-			logEntry = logEntry.WithField(echoMiddlewares.ContextTraceId, id)
+			logEntry = logEntry.WithField(echoMiddlewares.ApiContextName, id)
 
-			req := c.Request()
-			c.SetRequest(req.WithContext(context.WithValue(req.Context(), ContextLoggerName, logEntry)))
+			c.SetRequest(req.WithContext(context.WithValue(ctx, ContextLoggerName, logEntry)))
 
 			return next(c)
 		}
