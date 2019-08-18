@@ -36,7 +36,7 @@ func Delete(c echo.Context) error {
 	}
 
 	type Result struct {
-		message string
+		Message string `json:"message"`
 	}
 	result := Result{ "OK" }
 	resp := types.ApiResponse{ Result: result, TraceId: traceId }

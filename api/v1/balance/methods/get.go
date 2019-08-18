@@ -27,7 +27,7 @@ func Get(c echo.Context) error {
 	}
 
 	type Result struct {
-		balance models.BalanceEntity
+		Balance models.BalanceEntity `json:"balance"`
 	}
 
 	balance := models.BalanceEntity{}
@@ -37,7 +37,7 @@ func Get(c echo.Context) error {
 		return c.JSON(http.StatusOK, &resp)
 	}
 
-	result := Result{ balance: balance }
+	result := Result{ balance }
 	resp := types.ApiResponse{ Result: result, TraceId: traceId }
 
 	factory.Logger(ctx).Info("get resp: ", resp)

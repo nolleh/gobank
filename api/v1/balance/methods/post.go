@@ -50,7 +50,7 @@ func Post(c echo.Context) error {
 	factory.Logger(ctx).Info(fmt.Sprint("modified db as parameter", diffBalance))
 
 	type Result struct {
-		balance models.BalanceEntity
+		Balance models.BalanceEntity
 	}
 	result := Result { balance }
 	resp := types.ApiResponse{ Result: result, TraceId:traceId }
