@@ -25,14 +25,14 @@ func Post(c echo.Context) error {
 
 	if err != nil {
 		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
+		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
 	m := echo.Map{}
 	if err := c.Bind(&m); err != nil {
 		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
+		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
@@ -43,7 +43,7 @@ func Post(c echo.Context) error {
 
 	if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
 		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: apiError, TraceId: traceId }
+		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
@@ -53,7 +53,7 @@ func Post(c echo.Context) error {
 		balance models.BalanceEntity
 	}
 	result := Result { balance }
-	resp := types.ApiResponse{ Result:result, TraceId:traceId }
+	resp := types.ApiResponse{ Result: result, TraceId:traceId }
 
 	return c.JSON(http.StatusOK, &resp)
 }

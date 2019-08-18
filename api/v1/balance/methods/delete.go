@@ -23,7 +23,7 @@ func Delete(c echo.Context) error {
 
 	if err != nil {
 		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: respError, TraceId: traceId }
+		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
@@ -31,17 +31,17 @@ func Delete(c echo.Context) error {
 	
 	if _, err := balance.Delete(ctx); err != nil {
 		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: respError, TraceId: traceId }
+		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
-
-	factory.Logger(ctx).Info("delete db", userId)
 
 	type Result struct {
 		message string
 	}
 	result := Result{ "OK" }
 	resp := types.ApiResponse{ Result: result, TraceId: traceId }
+
+	factory.Logger(ctx).Info("delete db.. ", userId, ", resp:", resp)
 
 	return c.JSON(http.StatusOK, &resp)
 }

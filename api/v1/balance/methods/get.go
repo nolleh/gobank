@@ -21,8 +21,8 @@ func Get(c echo.Context) error {
 	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
-		respError := types.ApiError{Code: -1, Message: err.Error()}
-		resp := types.ApiResponse{Error:respError, TraceId: traceId}
+		respError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
@@ -32,13 +32,15 @@ func Get(c echo.Context) error {
 
 	balance := models.BalanceEntity{}
 	if dbRes, err := balance.GetById(ctx, userId); !dbRes || err != nil {
-		respError := types.ApiError{Code: -1, Message: err.Error()}
-		resp := types.ApiResponse{Error: respError, TraceId: traceId}
+		respError := types.ApiError{ Code: -1, Message: err.Error() }
+		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
 	}
 
-	result := Result { balance: balance }
-	resp := types.ApiResponse{ Result: result, TraceId: traceId}
+	result := Result{ balance: balance }
+	resp := types.ApiResponse{ Result: result, TraceId: traceId }
+
+	factory.Logger(ctx).Info("get resp: ", resp)
 
 	return c.JSON(http.StatusOK, &resp)
 }
