@@ -31,7 +31,7 @@ func Get(c echo.Context) error {
 	}
 
 	balance := models.BalanceEntity{}
-	if dbRes, err := balance.GetById(ctx, userId); !dbRes || err != nil {
+	if _, err := balance.GetById(ctx, userId); err != nil {
 		respError := types.ApiError{ Code: -1, Message: err.Error() }
 		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
 		return c.JSON(http.StatusOK, &resp)
