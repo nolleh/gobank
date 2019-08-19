@@ -11,18 +11,18 @@ import (
 )
 
 type Balance struct {
-	Amount uint64 `json:amount`
-	Symbol string `json:"symbol`
-	Fraction uint8 `json:"fraction""`
+	Amount uint64 `json:"amount"`
+	Symbol string `json:"symbol"`
+	Fraction uint8 `json:"fraction"`
 	StrExpr string `json:"strExpr"`
 }
 
 // Balance ...
 type BalanceEntity struct {
 	UserId uint64 `json:"userId" xorm:"pk"`
-	Balance Balance `json:"balance" xorm:"balance json" json notnull`
-	CreatedAt time.Time `json:"createdAt" xorm:"created`
-	UpdatedAt time.Time `json:"updatedAt xorm:"updated`
+	Balance Balance `json:"balance" xorm:"balance json notnull"`
+	CreatedAt time.Time `json:"createdAt" xorm:"created"`
+	UpdatedAt time.Time `json:"updatedAt" xorm:"updated"`
 }
 
 func (b *BalanceEntity) GetById(ctx context.Context, id uint64) (bool, error) {
