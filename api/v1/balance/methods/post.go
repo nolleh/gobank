@@ -24,16 +24,12 @@ func Post(c echo.Context) error {
 	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
-		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	m := echo.Map{}
 	if err := c.Bind(&m); err != nil {
-		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	balance := models.BalanceEntity{ UserId: userId }
@@ -42,9 +38,7 @@ func Post(c echo.Context) error {
 	mapstructure.Decode(mapBalance, &diffBalance)
 
 	if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
-		apiError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &apiError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	factory.Logger(ctx).Info(fmt.Sprint("modified db as parameter", diffBalance))

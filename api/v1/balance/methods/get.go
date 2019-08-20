@@ -21,9 +21,7 @@ func Get(c echo.Context) error {
 	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
-		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	type Result struct {
@@ -32,9 +30,7 @@ func Get(c echo.Context) error {
 
 	balance := models.BalanceEntity{}
 	if _, err := balance.GetById(ctx, userId); err != nil {
-		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	result := Result{ balance }

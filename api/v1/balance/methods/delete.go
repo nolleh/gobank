@@ -22,17 +22,13 @@ func Delete(c echo.Context) error {
 	traceId := factory.ApiContext(ctx).TraceId
 
 	if err != nil {
-		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	balance := models.BalanceEntity{ UserId: userId }
 	
 	if _, err := balance.Delete(ctx); err != nil {
-		respError := types.ApiError{ Code: -1, Message: err.Error() }
-		resp := types.ApiResponse{ Error: &respError, TraceId: traceId }
-		return c.JSON(http.StatusOK, &resp)
+		panic(err)
 	}
 
 	type Result struct {
