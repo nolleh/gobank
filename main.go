@@ -56,6 +56,9 @@ func initDB(driver, connection string) (*xorm.Engine, error) {
 
 	db.SetMaxOpenConns(10)
 
-	db.Sync(new(models.BalanceEntity))
+	if syncerr := db.Sync(new(models.BalanceEntity)); syncerr != nil {
+		return nil, syncerr
+	}
+
 	return db, nil
 }
