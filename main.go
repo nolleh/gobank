@@ -32,12 +32,15 @@ func main() {
 	}
 
 	e := echo.New()
+
 	e.Use(echoMiddlewares.InjectApiContext())
+	e.Use(echoMiddlewares.ErrorHandler())
 	e.Use(echoMiddlewares.InjectDbContext(db))
 	e.Use(logger.ContextLogger())
 
 	apiGroup := e.Group("/api")
 	api.Route(apiGroup)
+
 
 	if err := e.Start(":" + config.HttpPort); err != nil {
 		log.Println(err)

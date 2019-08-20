@@ -30,22 +30,26 @@ func InjectDbContext(db *xorm.Engine) echo.MiddlewareFunc {
 			switch req.Method {
 			case "POST", "PUT", "DELETE":
 				if err := session.Begin(); err != nil {
-					return echo.NewHTTPError(500, err.Error())
+					panic(err)
+					//return echo.NewHTTPError(500, err.Error())
 				}
 				if err := next(c); err != nil {
 					session.Rollback()
-					return echo.NewHTTPError(500, err.Error())
+					panic(err)
+					//return echo.NewHTTPError(500, err.Error())
 				}
 				if c.Response().Status >= 500 {
 					session.Rollback()
 					return nil
 				}
 				if err := session.Commit(); err != nil {
-					return echo.NewHTTPError(500, err.Error())
+					panic(err)
+					//return echo.NewHTTPError(500, err.Error())
 				}
 			default:
 				if err := next(c); err != nil {
-					return echo.NewHTTPError(500, err.Error())
+					panic(err)
+					//return echo.NewHTTPError(500, err.Error())
 				}
 			}
 
