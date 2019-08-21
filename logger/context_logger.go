@@ -21,7 +21,6 @@ func ContextLogger() echo.MiddlewareFunc {
 	log.SetOutput(logger.Writer())
 
 	logger.Formatter = &logrus.JSONFormatter{}
-	logger.Level = logrus.InfoLevel
 
 	hooks := logrus.LevelHooks{}
 	hooks.Add(&CallkerHook{})
