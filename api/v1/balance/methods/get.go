@@ -15,7 +15,7 @@ func RouteGet(g *echo.Group) {
 
 // Get ...
 func Get(c echo.Context) error {
-	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
+	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
 
 	ctx := c.Request().Context()
 	traceId := factory.ApiContext(ctx).TraceId
@@ -25,11 +25,10 @@ func Get(c echo.Context) error {
 	}
 
 	type Result struct {
-		Balance models.BalanceEntity `json:"balance"`
+		Balance interface{} `json:"balance"`
 	}
 
-	balance := models.BalanceEntity{}
-	if _, err := balance.GetById(ctx, userId); err != nil {
+	balance, err := models.BalanceDatastore.GetById(ctx, userId); if err != nil {
 		panic(err)
 	}
 

@@ -15,7 +15,7 @@ import (
 var ApiContextName string = "api_context"
 
 type ApiContext struct {
-	TraceId string
+	TraceId string /* for log tracking id. it reads from header or if not exist, generate one. */
 }
 
 // middlewareFunc: return (next) => HandlerFunc

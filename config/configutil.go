@@ -17,6 +17,11 @@ type Config struct {
 		Connection string
 	}
 	HttpPort string
+
+	DataStore struct {
+		ProjectId string
+		KeyFile string
+	}
 }
 
 var config Config
@@ -41,9 +46,13 @@ func readConfig(env string, config interface{}) error {
 	}
 
 	if env != "" {
-		loadFileConfig(env + ".yaml")
+		if err := loadFileConfig(env + ".yaml"); err != nil {
+			return fmt.Errorf("Fatal error config file: %s \n", err)
+		}
 	}
-	loadFileConfig("local.yaml")
+	if err := loadFileConfig("local.yaml"); err != nil {
+		return fmt.Errorf("Fatal error config file: %s \n", err)
+	}
 
 	if err := viper.Unmarshal(config); err != nil {
 		return fmt.Errorf("Fatal error config file: %s \n", err)
@@ -53,11 +62,15 @@ func readConfig(env string, config interface{}) error {
 
 func loadFileConfig(filename string) error {
 	f, err := os.Open(filepath.Join(configPath, filename))
-	defer f.Close()
+	if f != nil {
+		defer func() {
+			err := f.Close()
+			fmt.Println(fmt.Errorf("Fatal error while close file: %s \n", err))
+		}()
+	}
 	if err != nil {
 		return fmt.Errorf("Fatal error config file: %s \n", err)
 	}
 
-	viper.MergeConfig(f)
-	return nil
+	return viper.MergeConfig(f)
 }

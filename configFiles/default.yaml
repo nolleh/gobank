@@ -1,4 +1,7 @@
+httpPort: 8080
 database:
   driver: "mysql"
   connection: "bank_back_end" #"user:pass@protocol(ip:port)/bank_back_end"
-httpPort: 8080
+datastore:
+  projectId: "my-project"
+  keyFile: "key-path"

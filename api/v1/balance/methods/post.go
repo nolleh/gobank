@@ -19,7 +19,7 @@ func RoutePost(g *echo.Group) {
 // Post ...
 // actionType: deposit / withdraw
 func Post(c echo.Context) error {
-	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
+	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
 	ctx := c.Request().Context()
 	traceId := factory.ApiContext(ctx).TraceId
 
@@ -32,19 +32,23 @@ func Post(c echo.Context) error {
 		panic(err)
 	}
 
-	balance := models.BalanceEntity{ UserId: userId }
+
 	mapBalance := m["diffBalance"].(map[string]interface{}) // interface{}.(jsonobject)
 	var diffBalance models.Balance
 	mapstructure.Decode(mapBalance, &diffBalance)
+	//balance := models.BalanceEntity{ UserId: userId }
+	//if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
+	//	panic(err)
+	//}
 
-	if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
+	balance, err := models.BalanceDatastore.UpdateByRelatively(ctx, userId, &diffBalance); if err != nil {
 		panic(err)
 	}
 
 	factory.Logger(ctx).Info(fmt.Sprint("modified db as parameter", diffBalance))
 
 	type Result struct {
-		Balance models.BalanceEntity
+		Balance interface{}
 	}
 	result := Result { balance }
 	resp := types.ApiResponse{ Result: result, TraceId:traceId }

@@ -7,6 +7,8 @@ import (
 	"github.com/labstack/echo"
 	"gobank/config"
 	"gobank/echoMiddlewares"
+	"gobank/factory"
+
 	// "github.com/labstack/echo/middleware"
 	"github.com/go-xorm/xorm"
 	"gobank/api"
@@ -31,8 +33,9 @@ func main() {
 		panic(err)
 	}
 
-	e := echo.New()
+	factory.NewDataStore(config)
 
+	e := echo.New()
 	e.Use(echoMiddlewares.InjectApiContext())
 	e.Use(echoMiddlewares.ErrorHandler())
 	e.Use(echoMiddlewares.InjectDbContext(db))

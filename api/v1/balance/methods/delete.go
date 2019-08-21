@@ -16,7 +16,7 @@ func RouteDelete(g *echo.Group) {
 
 // Delete ... 
 func Delete(c echo.Context) error {
-	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
+	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
 
 	ctx := c.Request().Context()
 	traceId := factory.ApiContext(ctx).TraceId
@@ -25,9 +25,7 @@ func Delete(c echo.Context) error {
 		panic(err)
 	}
 
-	balance := models.BalanceEntity{ UserId: userId }
-	
-	if _, err := balance.Delete(ctx); err != nil {
+	if err := models.BalanceDatastore.Delete(ctx, userId); err != nil {
 		panic(err)
 	}
 
