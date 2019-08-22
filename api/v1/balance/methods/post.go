@@ -32,17 +32,24 @@ func Post(c echo.Context) error {
 		panic(err)
 	}
 
-
 	mapBalance := m["diffBalance"].(map[string]interface{}) // interface{}.(jsonobject)
 	var diffBalance models.Balance
-	mapstructure.Decode(mapBalance, &diffBalance)
-	//balance := models.BalanceEntity{ UserId: userId }
-	//if _, err := balance.UpdateByRelatively(ctx, diffBalance); err != nil {
-	//	panic(err)
-	//}
+	if err := mapstructure.Decode(mapBalance, &diffBalance); err != nil {
+		return err
+	}
 
-	balance, err := models.BalanceDatastore.UpdateByRelatively(ctx, userId, &diffBalance); if err != nil {
-		panic(err)
+	mapAction := m["action"].(string)
+	var strAction string
+	if err := mapstructure.Decode(mapAction, &strAction); err != nil {
+		return err
+	}
+
+	action := models.Deposit; if strAction == "withdraw" {
+		action = models.Withdraw
+	}
+
+	balance, err := models.BalanceDatastore.UpdateByRelatively(ctx, userId, &diffBalance, action); if err != nil {
+		return err
 	}
 
 	factory.Logger(ctx).Info(fmt.Sprint("modified db as parameter", diffBalance))

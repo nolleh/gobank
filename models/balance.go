@@ -25,43 +25,52 @@ type BalanceEntity struct {
 	UpdatedAt time.Time `json:"updatedAt" xorm:"updated"`
 }
 
-type BalanceRDB struct {
-}
+type BalanceAction int
+const (
+	Deposit BalanceAction = iota
+	Withdraw
+)
 
-var BalanceMySql BalanceRDB
+type balanceMysqlService struct {}
 
-func (dbService *BalanceRDB) GetById(ctx context.Context, userId int64) (*BalanceEntity, error) {
+var BalanceMySql balanceMysqlService
+
+func (dbService *balanceMysqlService) GetById(ctx context.Context, userId int64) (*BalanceEntity, error) {
 	 var b BalanceEntity
 	 _, err := factory.DB(ctx).ID(userId).Get(b)
 	 return &b, err
 }
 
 // Create ... Insert To DB
-func (dbService *BalanceRDB) Create(ctx context.Context, entity *BalanceEntity) (*BalanceEntity, error) {
+func (dbService *balanceMysqlService) Create(ctx context.Context, entity *BalanceEntity) (*BalanceEntity, error) {
 	var b BalanceEntity
 	_, err := factory.DB(ctx).Insert(b)
 	return &b, err
 }
 
 // Delete ... From DB
-func (dbService *BalanceRDB) Delete(ctx context.Context, userId int64) (*BalanceEntity, error) {
+func (dbService *balanceMysqlService) Delete(ctx context.Context, userId int64) (*BalanceEntity, error) {
 	var b BalanceEntity
 	_, err := factory.DB(ctx).ID(userId).Delete(b)
 	return &b, err
 }
 
 // Update ... From DB
-func (dbService *BalanceRDB) Update(ctx context.Context, entity *BalanceEntity) (*BalanceEntity, error) {
+func (dbService *balanceMysqlService) Update(ctx context.Context, entity *BalanceEntity) (*BalanceEntity, error) {
 	_, err := factory.DB(ctx).ID(entity.UserId).Update(entity)
 	return entity, err
 }
 
-func (dbService *BalanceRDB) UpdateByRelatively(ctx context.Context, userId int64, relVal Balance) (*BalanceEntity, error) {
+func (dbService *balanceMysqlService) UpdateByRelatively(
+	ctx context.Context, userId int64, relVal Balance, action BalanceAction) (*BalanceEntity, error) {
 	res, err := dbService.GetById(ctx, userId); if err != nil {
 		b := &BalanceEntity{ UserId: userId, Balance: relVal}
 		return dbService.Create(ctx, b)
 	}
 	newAmount := res.Balance.Amount + relVal.Amount
+	if action == Withdraw {
+		newAmount = res.Balance.Amount - relVal.Amount
+	}
 	strExpr := fmt.Sprint(newAmount, " ", res.Balance.Symbol)
 	balance := Balance {Amount: newAmount, Symbol: res.Balance.Symbol, Fraction: res.Balance.Fraction, StrExpr: strExpr}
 	res.Balance = balance
